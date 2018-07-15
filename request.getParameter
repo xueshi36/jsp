@@ -1,0 +1,40 @@
+<%@ page contentType="text/html;charset=GB2312"%> <%-- jsp annotate--%>
+<!DOCTYPE html>
+<html>
+<head>
+	<title>server</title>
+</head>
+<body>
+<%
+request.setCharacterEncoding("GB2312"); //request xuyao bianma
+String sideA =request.getParameter("sideA");
+String sideB =request.getParameter("sideB");
+String sideC =request.getParameter("sideC");
+String str = request.getParameter("string");
+
+out.println(str);
+try{
+	double a = Double.parseDouble(sideA);
+	double b = Double.parseDouble(sideB);
+	double c = Double.parseDouble(sideC);
+
+	double p = (a+b+c)/2 ,area = 0;
+	area = Math.sqrt(p*(p-a)*(p-b)*(p-c));
+	out.println("<br>area="+area);
+}
+catch(NumberFormatException ee){
+	out.println("<br>请输入");
+}
+%>
+</body>
+</html>
+
+<%--
+	double a = Double.parseDouble(sideA);
+	double b = Double.parseDouble(sideB);
+	double c = Double.parseDouble(sideC);
+
+	double p = (a+b+c)/2 ,area = 0;
+	area = Math.sqrt(p*(p-a)*(p-b)*(p-c));
+	out.println("<br>三角形面积="+area);
+--%>
