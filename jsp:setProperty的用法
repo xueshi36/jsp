@@ -1,0 +1,297 @@
+jsp:setProperty的用法
+2018年07月01日 11:16:26
+阅读数：59
+ 
+<jsp:setProperty>用来设置已经实例化的Bean对象的属性
+
+第一种形式：
+
+<jps:setProperty name = “JavaBean实例名”  property = ”*”/>
+
+该形式是设置Bean 属性的快捷方式.在Bean 中属性的名字，类型必须和request对象中的参数名称相匹配。由于表单中传过来的数据类型都是String 类型的，Jsp内在机制会把这些参数转化成Bean属性对应的类型。
+
+property = ”*”表示所有名字和Bean属性名字匹配的请求参数都将被传递给相应的属性set方法。  
+
+第二种形式:
+
+<jsp:setProperty name = “JavaBean实例名” property = “JavaBean属性名“ />
+
+使用request对象中的一个参数值来指定Bean中的一个属性值。在这个语法中，property指定Bean 的属性名，而且Bean 属性和request参数的名字应相同。也就是说，如果在Bean 中有setUserName(String userName)方法，那么，propertyName的值就是”userName”.这种形式灵活性较强,可以有选择的对Bean中的属性赋值
+
+第三种形式:
+
+<jsp:setProperty name = ”JavaBean实例名“ property = “JavaBean属性名“ value = “BeanValue”/>
+
+value用来指定Bean属性的值。字符串数据会在目标类中通过标准的valueOf方法自动转换成数字、boolean、Boolean、byte、Byte、char、Character。例如，boolean和Boolean类型的属性值（比如“true”）通过Boolean.valueOf转换，int和Integer类型的属性值（比如“42”）通过Integer.valueOf转换。 
+
+第四种形式:
+
+<jsp:setProperty name = ”JavaBean实例名“ 
+
+     property = “propertyName” param = “request对象中的参数名”
+
+/>
+
+  param指定用哪个请求参数作为Bean属性的值。Bean 属性和request参数的名字可以不同。如果当前请求没有参数，则什么事情也不做，系统不会把null传递给Bean属性的set方法。因此，你可以让Bean自己提供默认属性值，只有当请求参数明确指定了新值时才修改默认属性值。 
+
+例如，下面的代码片断表示：如果存在numItems请求参数的话，把numberOfItems属性的值设置为请求参数numItems的值；否则什么也不做。 
+
+
+＜jsp:setProperty name=”orderBean” property=”numberOfItems” param=”numItems” /＞ 
+
+下面是一个简单的例子:
+
+
+//sampleBean.java
+
+
+package MyJavaBeanPackage;
+
+
+public class SampleBean2
+
+{
+
+ private String id;
+
+ private String age;
+
+ private String name;
+
+ private String sex;
+
+ private String addr;
+
+public SampleBean2()
+
+ {
+
+ }
+
+ public String getName()
+
+ {
+
+  return name;
+
+ }
+
+ public void setName(String name)
+
+ {
+
+  this.name = name;
+
+ }
+
+ public String getSex()
+
+ {
+
+  return sex;
+
+ }
+
+ public void setSex(String sex)
+
+ {
+
+  this.sex = sex;
+
+ }
+
+ 
+
+ public void setId(String id)
+
+ {
+
+  this.id = id;
+
+ }
+
+ public void setAge(String age)
+
+ {
+
+  this.age = age;
+
+ }
+
+ public String getId()
+
+ {
+
+  return id;
+
+ }
+
+ public String getAge()
+
+ {
+
+  return age;
+
+ }
+
+ public String getAddr()
+
+ {
+
+  return addr;
+
+ }
+
+ public void setAddr(String addr)
+
+ {
+
+  this.addr = addr;
+
+ }
+
+}
+
+
+//SampleBean.html
+
+<html>
+
+  <head>
+
+    <title>使用<jsp:getProperty>和<jsp:setProperty>标记</title>
+
+  </head>
+
+  
+
+  <body>
+
+   <form name = “form1” action = “Sample2.jsp” method = “post”>
+
+    <p align = “center”>编号
+
+     <input type = “text” name = “id”>
+
+    </p>
+
+    <p align = “center”>姓名
+
+     <input type = “text” name = “name”>
+
+    </p>
+
+    <p align = “center”>性别
+
+     <select name = “TheSex” id = “sex”>
+
+      <option value = “男” selected>男</option>
+
+      <option value = “女”>女</option>
+
+       </select>
+
+     </p>
+
+     <p align = “center”>年龄
+
+      <input type = “text” name = “TheAge”>
+
+     </p>
+
+     <p align = “center”>
+
+      <input type = “submit” value = “提交”>
+
+      <input type = “reset” value = “重置”>
+
+     </p>
+
+    </form>
+
+   </body>
+
+ </html>
+
+     
+
+
+
+   //SampleBean.jsp
+
+<%@ page
+
+ language=“java” 
+
+ contentType = “text/html;charset = GBK”
+
+%>
+
+
+<jsp:useBean id = “sampleBean2” class = “MyJavaBeanPackage.SampleBean2”/> 
+
+<html>
+
+ <head>
+
+  <title>在JavaBean中存放数据</title>
+
+ </head>
+
+ <body>
+
+  <%–方法一
+
+   <jsp:setProperty name = “sampleBean2” property = ”*” />
+
+  –%>
+
+  <%– 方法二 –%>
+
+  <jsp:setProperty name = “sampleBean2” property = “id”/>
+
+  <jsp:setProperty name = “sampleBean2” property = “name”/>
+
+  <%–方法三 –%>
+
+  <jsp:setProperty name = “sampleBean2” property = “addr” value = “洛阳师范学院”/>
+
+  <%– 方法四 bean属性的名字可以与request参数不同–%>
+
+  <jsp:setProperty name = “sampleBean2” property = “sex” param = ”TheSex”/>
+
+  <jsp:setProperty name = “sampleBean2” property = “age” param = “TheAge”/>
+
+  <center>
+
+   编号:<jsp:getProperty name = “sampleBean2” property = “id”/><br>
+
+   姓名:<jsp:getProperty name = “sampleBean2” property = “name”/><br>
+
+   性别:<jsp:getProperty name = “sampleBean2” property = “sex”/><br> 
+
+   年龄:<jsp:getProperty name = “sampleBean2” property = “age”/><br>
+
+   住址:<jsp:getProperty name = “sampleBean2” property = “addr”/><br>
+
+  </center>
+
+ </body>
+
+</html>   
+
+
+
+
+//参考文献:
+
+1<<从零开始——JSP动态网页制作基础培训教程－源代码>>
+
+2<<http://hi.baidu.com/ffcheng1987/blog/item/44c71755925761c7b645ae2c.html
+
+ 
+
+
+
+
+转载来源：https://blog.csdn.net/wanghaishanren/article/details/2047400
